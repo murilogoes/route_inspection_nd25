@@ -13,7 +13,6 @@ class Vertice:
             self.vizinhos.append((v, peso))
             self.vizinhos.sort()
 
-#essa classe nao implementei ainda pois vai dar trabalho
 class Aresta:
     def __init__(self, v, p):
         self.vertice = v
@@ -125,73 +124,39 @@ class Grafo:
                     else:
                         self.avanca_proximo(v, maior_aresta(visitados))
                         break
-                        #print("tudo visitado")
-
-                    # for n in range(qtd_vizinhos):
-                    #     if self.vertices[v].vizinhos[n][1] <= v_segue[1]:
-                    #         v_segue = self.vertices[v].vizinhos[n]
-                    #         print(self.vertices[v].vizinhos[n])
-                    #         print("menor")
-                    #     else:
-                    #         print(self.vertices[v].vizinhos[n])
-                    #         print("maior")
-
-                    # if not self.vertices[i[0]].ultimovisitado:
-                    #    print("nao foi ultimo a ser visitado")
-                    #    self.avanca_proximo(v, i)
-                    # print(f'{i[0]} ja foi visitado')
-                    # if len(self.vertices[v].vizinhos) == 1:
-                    #     self.avanca_proximo(v, i)
-                    #     break
-                    # else:
-                    #     if self.tudo_visitado():
-                    #         self.avanca_proximo(v, i)
-                    #         break
-                    #     else:
-                    #         if not self.vertices[i[0]].ultimovisitado:
-                    #             print("nao foi ultimo a ser visitado")
-                    #             self.avanca_proximo(v, i)
-                    #         else:
-                    #             continue
-                # else:
-                #     self.avanca_proximo(v, i)
-                #     break
-                # if not self.vertices[i[0]].ultimovisitado:
-                #     print("nao foi ultimo a ser visitado")
-                #     self.avanca_proximo(v,i)
-        else:
-            print("cabo porra")
-            return True
-
-    def percorre_grafo(self, v):
-        # print(self.terminou(v))
-        if not self.terminou(v):
-            print(f'Estou no vertice {v}')
-            # self.vertices[v].ultimovisitado = False
-            for i in self.vertices[v].vizinhos:
-                print(i)
-                print(f'{v} -> {i[0]}')
-                if self.vertice_visitado(i[0]):
-                    print(f'{i[0]} ja foi visitado')
-                    if len(self.vertices[v].vizinhos) == 1:
-                        self.avanca_proximo(v, i)
-                        break
-                    else:
-                        if self.tudo_visitado():
-                            self.avanca_proximo(v, i)
-                            break
-                        else:
-                            if not self.vertices[i[0]].ultimovisitado:
-                                print("nao foi ultimo a ser visitado")
-                                self.avanca_proximo(v, i)
-                            else:
-                                continue
-                else:
-                    self.avanca_proximo(v, i)
-                    break
-                # if not self.vertices[i[0]].ultimovisitado:
-                #     print("nao foi ultimo a ser visitado")
-                #     self.avanca_proximo(v,i)
         else:
             print("fim de jogo")
             return True
+
+    # def percorre_grafo(self, v):
+    #     # print(self.terminou(v))
+    #     if not self.terminou(v):
+    #         print(f'Estou no vertice {v}')
+    #         # self.vertices[v].ultimovisitado = False
+    #         for i in self.vertices[v].vizinhos:
+    #             print(i)
+    #             print(f'{v} -> {i[0]}')
+    #             if self.vertice_visitado(i[0]):
+    #                 print(f'{i[0]} ja foi visitado')
+    #                 if len(self.vertices[v].vizinhos) == 1:
+    #                     self.avanca_proximo(v, i)
+    #                     break
+    #                 else:
+    #                     if self.tudo_visitado():
+    #                         self.avanca_proximo(v, i)
+    #                         break
+    #                     else:
+    #                         if not self.vertices[i[0]].ultimovisitado:
+    #                             print("nao foi ultimo a ser visitado")
+    #                             self.avanca_proximo(v, i)
+    #                         else:
+    #                             continue
+    #             else:
+    #                 self.avanca_proximo(v, i)
+    #                 break
+    #             # if not self.vertices[i[0]].ultimovisitado:
+    #             #     print("nao foi ultimo a ser visitado")
+    #             #     self.avanca_proximo(v,i)
+    #     else:
+    #         print("cabo porra")
+    #         return True
