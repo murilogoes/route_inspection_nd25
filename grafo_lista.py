@@ -2,7 +2,8 @@ class GrafoLista:
 
     def __init__(self, vertices):
         self.vertices = vertices
-        self.grafo = [[] for i in range(self.vertices)]
+        self.grafo = [ [] for i in range(self.vertices)]
+
 
     def adiciona_aresta(self, u, v, peso):
         # estamos pensando em grafo direcionado com peso nas arestas
@@ -16,3 +17,4 @@ class GrafoLista:
             for j in self.grafo[i]:
                 print(f'{j}  ->', end='  ')
             print('')
+

@@ -1,29 +1,50 @@
 from grafo_lista import GrafoLista
 from grafo_matriz import GrafoMatriz
+from grafo import Grafo, Vertice
 
-print("Lista de Adjacencia")
 
-g = GrafoLista(4)
+g = Grafo()
+g.adiciona_vertice(Vertice('A'))
+g.adiciona_vertice(Vertice('B'))
+g.adiciona_vertice(Vertice('C'))
+g.adiciona_vertice(Vertice('D'))
+g.adiciona_vertice(Vertice('E'))
 
-#adiciona_aresta(vertice a, que vai ao b, e o peso)
-g.adiciona_aresta(1, 4, 1)
-g.adiciona_aresta(2, 1, 5)
-g.adiciona_aresta(2, 3, 3)
-g.adiciona_aresta(3, 4, 8)
-g.adiciona_aresta(4, 1, 3)
-g.adiciona_aresta(4, 2, 2)
+g.adiciona_aresta('A', 'D', 1)
+g.adiciona_aresta('B', 'A', 5)
+g.adiciona_aresta('B', 'C', 3)
+g.adiciona_aresta('C', 'D', 8)
+g.adiciona_aresta('D', 'B', 2)
+g.adiciona_aresta('D', 'A', 3)
+g.adiciona_aresta('B','E',2)
+g.adiciona_aresta('E','C',4)
 
-g.mostra_lista()
+# g.adiciona_vertice(Vertice('A'))
+# g.adiciona_vertice(Vertice('B'))
+# g.adiciona_vertice(Vertice('C'))
+# g.adiciona_vertice(Vertice('D'))
+#
+# g.adiciona_aresta('A', 'B', 3)
+# g.adiciona_aresta('A', 'D', 4)
+# g.adiciona_aresta('B', 'A', 1)
+# g.adiciona_aresta('B', 'C', 2)
+# g.adiciona_aresta('C', 'B', 2)
+# g.adiciona_aresta('D', 'A', 4)
+# g.adiciona_aresta('D', 'C', 2)
 
-print("Matriz de Adjacencia")
-g = GrafoMatriz(4)
 
-#adiciona_aresta(vertice a, que vai ao b, e o peso)
-g.adiciona_aresta(1, 4, 1)
-g.adiciona_aresta(2, 1, 5)
-g.adiciona_aresta(2, 3, 3)
-g.adiciona_aresta(3, 4, 8)
-g.adiciona_aresta(4, 1, 3)
-g.adiciona_aresta(4, 2, 2)
+g.imprime_grafo()
+#print("começando........ E")
+g.encontra_caminho('A')
 
-g.mostra_matriz()
+
+
+# for i in range(ord('A'), ord('K')):
+#     g.adiciona_vertice(Vertice(chr(i)))
+#
+# edges = ['AB', 'AE', 'BF', 'CG', 'DE', 'DH', 'EH', 'FG', 'FI', 'FJ', 'GJ', 'HI']
+# for edge in edges:
+#     print(f'{edge[:1]}  {edge[1:]}')
+#     g.adiciona_aresta(edge[:1], edge[1:], 3)
+
+
