@@ -1,6 +1,6 @@
 from grafo_lista import GrafoLista
 from grafo_matriz import GrafoMatriz
-from grafo import Grafo, Vertice
+from grafo2 import Grafo, Vertice
 
 
 g = Grafo()
@@ -35,7 +35,7 @@ g.adiciona_aresta('E','C',4)
 
 g.imprime_grafo()
 #print("começando........ E")
-g.encontra_caminho('A')
+g.encontra_caminho('D')
 
 
 
