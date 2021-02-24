@@ -6,7 +6,7 @@ import dados
 g = Grafo()
 
 #numero_grafo = int(input('Digite o número do grafo:'))
-numero_grafo = 1
+numero_grafo = 3
 
 for i in dados.data[numero_grafo]["vertices"]:
     #print(i)
@@ -19,7 +19,7 @@ for i in dados.data[numero_grafo]["arestas"]:
 
 inicio = time.time()
 #g.encontra_caminho(input('digite o ponto de partida: ').upper())
-g.encontra_caminho('A')
+g.encontra_caminho('D')
 fim = time.time()
 #
 print('duracao: %f' % (fim - inicio))

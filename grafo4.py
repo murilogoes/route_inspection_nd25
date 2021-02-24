@@ -1,4 +1,6 @@
 import secrets
+from copy import deepcopy
+
 # a implementacao desse grafo se dará por lista de adjacencias
 # TESTANDO COM FORÇA BRUTA
 
@@ -57,6 +59,7 @@ class Grafo:
         else:
             return False
 
+    # gera uma lista com todos os hashes das arestas no começo do programa para facilitar a busca em tempo de execucao
     def gera_lista_hashes(self):
         for dd in self.vertices.values():
             for j in dd.vizinhos:
@@ -71,128 +74,187 @@ class Grafo:
                 lista = f'{lista} -> {j.destino} ({j.peso})({j.direcionado})'
             print(lista)
 
-    # retorna qual vertice iniciou o percurso
-    def vertice_partida(self, v):
-        return self.vertices[v].partida
-
-    # metodo para anotar que determinada aresta ja foi visitada
-    def marca_aresta_visitada(self, v, d):
-        for i in self.vertices[v].vizinhos:
-            if i.destino == d:
-                i.quantidade_visitas += 1
-                i.visitado = True
-
-
-    # metodo para me dizer se a aresta ja foi visitada
-    def aresta_visitada(self, v, d):
-        #print(f'{v}, {d}')
-        for i in self.vertices[v].vizinhos:
-            if i.destino == d:
-                return i.visitado
-                break
-
+    #metodo me retorna uma aresta passando o vertice de origem e o destino
     def get_aresta(self, v, d):
-        #print(f'{v}, {d}')
         for i in self.vertices[v].vizinhos:
             if i.destino == d:
                 return i
 
     # metodo para me dizer se todas as arestas ja foram visitadas
     # aqui, quando uma aresta nao direcionada nao foi percorrida em determinado sentido, eu verifico se ja foi no outro sentido, ai marca como visitada
-    # def todas_arestas_visitadas(self):
-    #     #iterando todos os vertices
-    #     for dd in self.vertices.values():
-    #         #print(dd.vizinhos)
-    #         #checando cada aresta de um vertice
-    #         for j in dd.vizinhos:
-    #             #print(j.visitado)
-    #             # se a aresta nao foi ainda visitada
-    #             if not j.visitado:
-    #                 #print("aresta nao foi visitada")
-    #                 # se a aresta for direcionada ....
-    #                 if j.direcionado:
-    #                     # retorna falso para visitar
-    #                     return False
-    #                     break
-    #                 # se a aresta nao for direcionada...
-    #                 else:
-    #                     # e se o outro lado ainda nao foi visitado...
-    #                     if not self.aresta_visitada(j.destino, dd.nome):
-    #                         #print ("nao visitou nenhum dos lados")
-    #                         # retorna falso para visitar
-    #                         return False
-    #                         break
-    #     return True
-
-    # #se todas as arestas foram visitadas e eu estou no ponto de partida...
-    # def terminou(self, v):
-    #     return (self.todas_arestas_visitadas() and self.vertices[v].partida)
-
-    # metodo para me dizer se todas as arestas ja foram visitadas
-    # aqui, quando uma aresta nao direcionada nao foi percorrida em determinado sentido, eu verifico se ja foi no outro sentido, ai marca como visitada
     def todas_arestas_visitadas(self, arestas_percorridas):
-        hashes_percorridos = list()
-        for i in arestas_percorridas:
-            hashes_percorridos.append(i.hash)
-        return set(self.arestas_hashes) == set(hashes_percorridos)
 
-    #se todas as arestas foram visitadas e eu estou no ponto de partida...
+        # montando uma lista com os hashes das arestas percorridas
+        arestas_percorridas_hashes = list()
+        for i in arestas_percorridas:
+            arestas_percorridas_hashes.append(i.hash)
+
+        # montando uma lista dos hashes nao percorridos
+        hashes_nao_percorridos = list()
+        #for j in arestas_percorridas:
+        for j in self.arestas_hashes:
+            if j not in arestas_percorridas_hashes:
+                hashes_nao_percorridos.append(j)
+
+        # aqui eu vou checar se caso houver uma aresta nao visitada e ela for nao direcionada, checa se a aresta do outro lado foi visitada
+        # caso a aresta inversa ja foi visitada, eu considero toda aresta visitada e removo da lista de hashes nao percorridos
+        for i in self.vertices.values():
+            for j in i.vizinhos:
+                if not j.direcionado:
+                    if j.hash in hashes_nao_percorridos:
+                        # pegando as coordenadas do hash nao visitado
+                        coordenadas = self.get_aresta_por_hash(j.hash)
+                        # invertando as coordenadas, pegando a aresta do lado contrario
+                        aresta = self.get_aresta(coordenadas[1], coordenadas[0])
+                        # se a aresta do lado contrario for visitada, eu removo a nao visitada da lista
+                        if aresta.hash in arestas_percorridas_hashes:
+                            hashes_nao_percorridos.remove(j.hash)
+
+        # se a lista de hash nao percorrido for igual a zero significa que ja percorreu tudo
+        return len(hashes_nao_percorridos) == 0
+
+    # metodo para pegar uma aresta passando o hash como entrada
+    def get_aresta_por_hash(self, hash):
+        teste = list()
+        for i in self.vertices.values():
+            for j in i.vizinhos:
+                if j.hash == hash:
+                    teste.append(i.nome)
+                    teste.append(j.destino)
+                    return teste
+
+    # metodo para dizer se o percurso terminou, se todas as arestas foram visitadas e eu estou no ponto de partida...
     def terminou(self, v, arestas_percorridas):
         return (self.todas_arestas_visitadas(arestas_percorridas) and self.vertices[v].partida)
 
-
-    def checa_aresta_visitada(self, aresta, arestas):
-        for i in arestas:
-            if i.hash == aresta.hash:
+    # aqui eu passo uma aresta unica e uma lista de arestas, se essa aresta tiver na lista, significa que ja foi visitada
+    def caminho_visitado(self, aresta, arestas_percorridas):
+        for i in arestas_percorridas:
+            if aresta.hash == i.hash:
                 return True
-                break
         return False
 
+    # aqui eu vou pegar exatamente a aresta do caminho especifico que foi rodado, em relacao a aresta do grafo original
+    def get_aresta_caminho(self, aresta, arestas_percorridas):
+        for i in arestas_percorridas:
+            if aresta.hash == i.hash:
+                return i
 
-    # esse metodo da o start ao percurso
+    # esse metodo da o start ao percurso da aplicacao
     def encontra_caminho(self, v):
         self.gera_lista_hashes()
         self.vertices[v].partida = True
-        print(len(self.arestas_hashes))
         self.percorre_grafo(v, 1)
 
         print("finalizando execucao...")
+        # aqui ele vai iterar os caminhos feitos, me falar o percurso e o custo de cada
         for i in self.caminhos:
-            print(i.percurso)
-        #self.percorre_grafo(v)
+            print(f'{i.percurso} + {i.custo}')
 
+    # metodo para avancar ao proximo vertice
     def avanca_proximo(self, v, i, ncaminho):
-        print(ncaminho)
-        print(len(self.caminhos))
-        if not self.checa_aresta_visitada(i, self.caminhos[ncaminho - 1].arestas_percorridas):
-            self.caminhos[ncaminho - 1].arestas_percorridas.append(self.get_aresta(v, i.destino))
-            self.caminhos[ncaminho - 1].percurso += i.destino
-            print(f'indo de {v} para {i.destino} caminho {ncaminho}')
-            ncaminho += 1
-            self.percorre_grafo(self.vertices[i.destino].nome, ncaminho)
 
+        contem_aresta = False
+        nova_aresta = {}
+
+        # essa iteracao esta sendo necessaria para eu checar se estou passando pela mesma aresta
+        # ao inves de adicionar uma aresta nova no caminho, eu apenas incremento a existente
+        for j in self.caminhos[ncaminho - 1].arestas_percorridas:
+            if j.hash == i.hash:
+                contem_aresta = True
+                nova_aresta = j
+                break
+        if contem_aresta:
+            nova_aresta.quantidade_visitas +=1
+        else:
+        # se for uma aresta nova, eu pego ela e jogo no caminho
+            nova_aresta = deepcopy(i)
+            nova_aresta.quantidade_visitas += 1
+            nova_aresta.visitado = True
+            self.caminhos[ncaminho - 1].arestas_percorridas.append(nova_aresta)
+
+        # independente dos dois casos acima, incrementando o percurso e o peso
+        self.caminhos[ncaminho - 1].percurso += i.destino
+        self.caminhos[ncaminho - 1].custo += i.peso
+        print(f'indo de {v} para {i.destino} caminho {ncaminho}')
+
+        # chamando a funcao que vai percorrer o grafo, passando o vertice destino e a posicao do caminho
+        self.percorre_grafo(self.vertices[i.destino].nome, ncaminho)
+
+
+    # metodo principal que vai fazer caminhar de um vertice do outro, escolhendo a melhor aresta
     def percorre_grafo(self, v, ncaminho):
-       # print(v)
 
+        # esse metodo vai me dizer qual vai ser a melhor aresta a ser seguida atraves do vertice que estou
+        def melhor_aresta(lista_aresta, arestas_percorridas, ncaminho):
+            # armazenando o primeiro valor da lista
+            melhor = lista_aresta[0]
+            for n in range(len(lista_aresta)):
+
+                # se o melhor atual for visitado e o comparado nao, ja atribui
+                if self.caminho_visitado(melhor, arestas_percorridas) and not self.caminho_visitado(lista_aresta[n], arestas_percorridas):
+                    print("melhor ja foi visitado e valor testado nao")
+                #if melhor.visitado and not lista_aresta[n].visitado:
+                    if lista_aresta[n].direcionado:
+                        melhor = lista_aresta[n]
+                    else:
+                        # caso de aresta nao direcionada
+                        aresta_inversa = self.get_aresta(lista_aresta[n].destino, v)
+                        if not self.caminho_visitado(aresta_inversa, arestas_percorridas):
+                            melhor = lista_aresta[n]
+
+                # se ambos nao tiverem sido visitados, compara o de menor peso
+                elif not self.caminho_visitado(melhor, arestas_percorridas) and not self.caminho_visitado(lista_aresta[n], arestas_percorridas):
+                    print("nenhum dos dois foram visitados")
+                    #TO MECHENDO AQUI PARA RESOLVER O PROBLEMA DE RECURSAO
+                    #elif not melhor.visitado and not lista_aresta[n].visitado:
+                    if lista_aresta[n].peso < melhor.peso:
+                        # if lista_aresta[n].peso > melhor.peso:
+                        #self.percorre_grafo(melhor.destino, len(self.caminhos) + 1)
+                        melhor = lista_aresta[n]
+                    else:
+                        murilo = "eae"
+                        # self.percorre_grafo(lista_aresta[n].destino, len(self.caminhos) + 1)
+
+                # se ambos ja foram visitados
+                #else:
+                elif self.caminho_visitado(melhor, arestas_percorridas) and self.caminho_visitado(lista_aresta[n], arestas_percorridas):
+                    # verifico qual teve menor quantidade de visitas ...
+                    print("ambos foram visitados")
+
+                    if self.get_aresta_caminho(lista_aresta[n], arestas_percorridas).quantidade_visitas < self.get_aresta_caminho(melhor, arestas_percorridas).quantidade_visitas:
+                        # print("eae????")
+                    #if lista_aresta[n].quantidade_visitas < melhor.quantidade_visitas:
+                        melhor = lista_aresta[n]
+            # print(f'{melhor.destino} é o melhor vertice para prosseguir')
+            return melhor
+        ######### FIM DA FUNCAO QUE VERIFICA A MELHOR ARESTA ###########
+
+        # se tiver no começo da aplicação, ainda não temos caminhos, então vamos criar o primeiro
         if len(self.caminhos) == 0:
             # print("primeiro caminho")
             self.caminhos.append(Caminho(v))
         else:
+
          #   print(f'{ncaminho} {len(self.caminhos)}')
+         # se ja tiver caminho criado, vamos checar se é um novo caminho pelo ncaminho
+         # se o ncaminho for superior ao tamanho de caminhos, significa que estou querendo criar um novo caminho
             if ncaminho > len(self.caminhos):
-                self.caminhos.append(Caminho(self.caminhos[ncaminho - 2].percurso + v))
-            #self.caminhos.append(Caminho(self.caminhos[ncaminho - 1].percurso + v))
-        #print(f'estou no vertice {v} e caminho {ncaminho}')
-        if not self.terminou(v, self.caminhos[ncaminho - 1].arestas_percorridas) and ncaminho < 100:
+                self.caminhos.append(deepcopy(self.caminhos[ncaminho - 2]))
+                self.caminhos[ncaminho - 1].percurso += v
+                self.caminhos[ncaminho - 1].visitado = True
 
+        # se nao terminou, ou seja, se ainda nao percorreu tudo e chegou ao inicial...
+        # ncaminho < 10 eu coloquei para percorrer apenas 10 caminhos
+        if not self.terminou(v, self.caminhos[ncaminho - 1].arestas_percorridas) and ncaminho < 10:
 
-
-            # if len(self.vertices[v].vizinhos) == 1:
-            #     print("so tem um vizinho, avança")
-            #     self.avanca_proximo(v, self.vertices[v].vizinhos[0], ncaminho)
-            # else:
-            for i in self.vertices[v].vizinhos:
-                self.avanca_proximo(v, i, ncaminho)
-                #ncaminho+=1
-
+            # se so tiver uma aresta para ir ate o vizinho do vertice atual, ja avança para o proximo
+            if len(self.vertices[v].vizinhos) == 1:
+                # print("so tem um vizinho, avança")
+                self.avanca_proximo(v, self.vertices[v].vizinhos[0], ncaminho)
+            # senao, vamos verificar qual aresta é melhor
+            else:
+                # print("tem mais de um vizinho, vamos ver qual vai pegar")
+                self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos, self.caminhos[ncaminho - 1].arestas_percorridas,  ncaminho), ncaminho)
+                #self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos, ncaminho))
 
