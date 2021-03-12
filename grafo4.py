@@ -1,5 +1,8 @@
 import secrets
 from copy import deepcopy
+import time
+import matplotlib.pyplot as plt
+import time
 
 
 # a implementacao desse grafo se dará por lista de adjacencias
@@ -42,6 +45,13 @@ class Grafo:
     caminho = ""
     custo = 0
     arestas_hashes = list()
+
+    #########################################
+    # as linhas abaixo é para gerar o grafico
+    elements = list()
+    times = list()
+    tempo = 0
+    vezes = 0
 
     # adiciona os vertices ao grafo (A,B,C,D....)
     def adiciona_vertice(self, vertice):
@@ -149,9 +159,18 @@ class Grafo:
         self.percorre_grafo(v, 1)
 
         print("finalizando execucao...")
-        # aqui ele vai iterar os caminhos feitos, me falar o percurso e o custo de cada
         for i in self.caminhos:
             print(f'{i.percurso} + {i.custo}')
+        print(len(self.caminhos))
+        plt.xlabel('Iterações')
+        plt.ylabel('Time Complexity')
+        #plt.plot(elements, times, label='Força Bruta')
+        plt.plot(self.elements, self.times, label='Força Bruta')
+        plt.grid()
+        plt.legend()
+        plt.show()
+        # aqui ele vai iterar os caminhos feitos, me falar o percurso e o custo de cada
+
 
     # metodo para avancar ao proximo vertice
     def avanca_proximo(self, v, i, ncaminho):
@@ -192,7 +211,8 @@ class Grafo:
     # metodo principal que vai fazer caminhar de um vertice do outro, escolhendo a melhor aresta
     def percorre_grafo(self, v, ncaminho):
 
-        print(f'Estou no vertice {v}')
+        inicio = time.time()
+        # print(f'Estou no vertice {v}')
 
         # esse metodo vai me dizer qual vai ser a melhor aresta a ser seguida atraves do vertice que estou
         def melhor_aresta(lista_aresta, arestas_percorridas):
@@ -217,7 +237,7 @@ class Grafo:
                 elif not self.caminho_visitado(melhor, arestas_percorridas) and not self.caminho_visitado(
                         lista_aresta[n], arestas_percorridas):
                     # print("nenhum dos dois foram visitados")
-                    # TO MECHENDO AQUI PARA RESOLVER O PROBLEMA DE RECURSAO
+                    # TO MEXENDO AQUI PARA RESOLVER O PROBLEMA DE RECURSAO
                     # elif not melhor.visitado and not lista_aresta[n].visitado:
                     if lista_aresta[n].peso < melhor.peso:
                         # if lista_aresta[n].hash != melhor.hash:
@@ -245,8 +265,11 @@ class Grafo:
                         melhor = lista_aresta[n]
 
                 # print(f'{melhor.destino} é o melhor vertice para prosseguir')
-                if alternativo and len(self.caminhos) < 10:
+                if alternativo:
                     self.avanca_proximo(v, alternativo, len(self.caminhos) + 1)
+                    # AQUI EU POSSO COLOCAR UMA TRAVA PARA GERAR MENOS CAMINHOS
+                #if alternativo and len(self.caminhos) < 1:
+                #    self.avanca_proximo(v, alternativo, len(self.caminhos) + 1)
 
 
             return melhor
@@ -254,6 +277,8 @@ class Grafo:
         ######### FIM DA FUNCAO QUE VERIFICA A MELHOR ARESTA ###########
 
         # se tiver no começo da aplicação, ainda não temos caminhos, então vamos criar o primeiro
+
+
         if len(self.caminhos) == 0:
             # print("primeiro caminho")
             self.caminhos.append(Caminho(v))
@@ -269,6 +294,7 @@ class Grafo:
 
         # se nao terminou, ou seja, se ainda nao percorreu tudo e chegou ao inicial...
         # ncaminho < 10 eu coloquei para percorrer apenas 10 caminhos
+
         if not self.terminou(v, self.caminhos[ncaminho - 1].arestas_percorridas):
 
             # se so tiver uma aresta para ir ate o vizinho do vertice atual, ja avança para o proximo
@@ -281,3 +307,12 @@ class Grafo:
                 self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos,
                                                      self.caminhos[ncaminho - 1].arestas_percorridas), ncaminho)
                 # self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos, ncaminho))
+
+        fim = time.time()
+        #print(fim - inicio)
+        self.tempo = self.tempo + (fim - inicio)
+        self.elements.append(self.vezes)
+        self.vezes += 1
+        self.times.append(self.tempo)
+        # self.elements().append(len(self.caminhos))
+        #self.elements().append(len(fim - inicio))
