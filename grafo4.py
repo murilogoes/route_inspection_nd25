@@ -224,7 +224,6 @@ class Grafo:
                 # se o melhor atual for visitado e o comparado nao, ja atribui
                 if self.caminho_visitado(melhor, arestas_percorridas) and not self.caminho_visitado(lista_aresta[n],
                                                                                                     arestas_percorridas):
-                    # print("melhor ja foi visitado e valor testado nao")
                     if lista_aresta[n].direcionado:
                         melhor = lista_aresta[n]
                     else:
@@ -236,42 +235,26 @@ class Grafo:
                 # se ambos nao tiverem sido visitados, compara o de menor peso
                 elif not self.caminho_visitado(melhor, arestas_percorridas) and not self.caminho_visitado(
                         lista_aresta[n], arestas_percorridas):
-                    # print("nenhum dos dois foram visitados")
-                    # TO MEXENDO AQUI PARA RESOLVER O PROBLEMA DE RECURSAO
-                    # elif not melhor.visitado and not lista_aresta[n].visitado:
                     if lista_aresta[n].peso < melhor.peso:
-                        # if lista_aresta[n].hash != melhor.hash:
                         alternativo = deepcopy(melhor)
-                            #self.avanca_proximo(v, melhor, len(self.caminhos) + 1)
                         melhor = lista_aresta[n]
-                    #else:
-                      #  if lista_aresta[n].hash != melhor.hash:
-                       #     alternativo = deepcopy(lista_aresta[n])
-                            # self.avanca_proximo(v, lista_aresta[n], len(self.caminhos) + 1)
-                        #print(f'indo de {v}  para {melhor.destino} caminho {ncaminho}')
-                    # else:
-                    #     self.avanca_proximo(v, lista_aresta[n], len(self.caminhos) + 1)
+
                 # se ambos ja foram visitados
                 # else:
                 elif self.caminho_visitado(melhor, arestas_percorridas) and self.caminho_visitado(lista_aresta[n],
                                                                                                   arestas_percorridas):
                     # verifico qual teve menor quantidade de visitas ...
                     # print("ambos foram visitados")
-
                     if self.get_aresta_caminho(lista_aresta[n],
                                                arestas_percorridas).quantidade_visitas < self.get_aresta_caminho(melhor,
                                                                                                                  arestas_percorridas).quantidade_visitas:
-
                         melhor = lista_aresta[n]
 
-                # print(f'{melhor.destino} é o melhor vertice para prosseguir')
                 if alternativo:
                     self.avanca_proximo(v, alternativo, len(self.caminhos) + 1)
                     # AQUI EU POSSO COLOCAR UMA TRAVA PARA GERAR MENOS CAMINHOS
                 #if alternativo and len(self.caminhos) < 1:
                 #    self.avanca_proximo(v, alternativo, len(self.caminhos) + 1)
-
-
             return melhor
 
         ######### FIM DA FUNCAO QUE VERIFICA A MELHOR ARESTA ###########
@@ -304,9 +287,8 @@ class Grafo:
             # senao, vamos verificar qual aresta é melhor
             else:
                 # print("tem mais de um vizinho, vamos ver qual vai pegar")
-                self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos,
-                                                     self.caminhos[ncaminho - 1].arestas_percorridas), ncaminho)
-                # self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos, ncaminho))
+                self.avanca_proximo(v, melhor_aresta(self.vertices[v].vizinhos, self.caminhos[ncaminho - 1].arestas_percorridas), ncaminho)
+
 
         fim = time.time()
         #print(fim - inicio)

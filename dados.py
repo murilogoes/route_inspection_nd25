@@ -114,7 +114,7 @@ data = {
         "vertices": ['A', 'B', 'C', 'D', 'E'],
         "arestas": [
             ('A', 'D', 1, True), ('B', 'A', 5, True), ('B', 'C', 3, True), ('C', 'D', 8, True), ('D', 'B', 2, True),
-            ('D', 'A', 3, True), ('B', 'E', 2, True), ('E', 'C', 4, True)
+            ('D', 'A', 3, True) , ('B', 'E', 2, True), ('E', 'C', 4, True)
         ],
         "descricao": "grafo 100% Direcionado"
     },
@@ -140,6 +140,13 @@ data = {
             ('E', 'B', 4, True), ('E', 'F', 5, False), ('F', 'G', 20, False)
         ],
         "descricao": "grafo misto mais complexo"
-    }
+    },
+    5: {
+        "vertices": ['A', 'B', 'C', 'D'],
+        "arestas": [
+            ('A', 'B', 1, True), ('B', 'C', 5, True), ('C', 'D', 3, True), ('C', 'A', 3, True), ('D', 'A', 8, True)
+        ],
+        "descricao": "grafo 100% Direcionado"
+    },
 }
 

@@ -1,4 +1,4 @@
-from grafo4 import Grafo, Vertice
+from guloso import Grafo, Vertice
 import sys
 import time
 import dados
@@ -10,8 +10,8 @@ sys.setrecursionlimit(15000)
 g = Grafo()
 
 #
-# dataset = dados.data[1]["arestas"]
-# tamanho = dados.data[1]["vertices"]
+# dataset = dados.data[5]["arestas"]
+# tamanho = dados.data[5]["vertices"]
 # for i in tamanho:
 #     g.adiciona_vertice(Vertice(i))
 #
